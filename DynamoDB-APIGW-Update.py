@@ -16,12 +16,12 @@ def respond(err, res=None):
 
 def lambda_handler(event, context):
     '''Demonstrates a simple HTTP endpoint using API Gateway. You have full
-    access to the request and response payload, including headers and
+    access to the request and response payload/output, including headers and
     status code.
 
     To scan a DynamoDB table, make a GET request with the TableName as a
     query string parameter. To put, update, or delete an item, make a POST,
-    PUT, or DELETE request respectively, passing in the payload to the
+    PUT, or DELETE request respectively, passing in the payload/output to the
     DynamoDB API as a JSON body.
     '''
     #print("Received event: " + json.dumps(event, indent=2))
@@ -36,10 +36,10 @@ def lambda_handler(event, context):
     operation = event['httpMethod']
     if operation in operations: #if the operation is in the array of operations above
         if operation == 'GET':
-            payload = event['queryStringParameters']
+            output = event['queryStringParameters']
         else:
-            payload = json.loads(event['body'])
-        return respond(None, operations[operation](dynamo, payload))
+            output = json.loads(event['body'])
+        return respond(None, operations[operation](dynamo, output))
     else:
         return respond(ValueError('Unsupported method "{}"'.format(operation)))
     
